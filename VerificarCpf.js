@@ -1,42 +1,37 @@
-function verificarCPF(cpf) {
-
-    cpf = cpf.replace(/[^\d]/g, '');
-
-    if (cpf.length !== 11) {
-        return false;
+function calculoloop(contador, cpfsodigitos){
+    let soma = 0
+    for (i=contador; i>1; i--){
+        soma += cpfsodigitos[contador-i] * i
     }
+    let resultado = soma%11
 
-    let soma1 = 0;
-    let peso1 = 10;
-    for (let i = 0; i < 9; i++) {
-        soma1 += parseInt(cpf[i]) * peso1;
-        peso1--;
+    if(
+        (resultado<2 && cpfsodigitos[contador -1]!=0)
+        || (resultado >= 2 && cpfsodigitos [contador - 1]!= 11 - resultado)
+    ){
+        return false
     }
-
-    let resto1 = soma1 % 11;
-    let digito1 = (resto1 < 2) ? 0 : 11 - resto1;
-
-    let soma2 = 0;
-    let peso2 = 11;
-    for (let i = 0; i < 9; i++) {
-        soma2 += parseInt(cpf[i]) * peso2;
-        peso2--;
-    }
-    soma2 += digito1 * 2; 
-
-    let resto2 = soma2 % 11;
-    let digito2 = (resto2 < 2) ? 0 : 11 - resto2;
-
-    if (parseInt(cpf[9]) === digito1 && parseInt(cpf[10]) === digito2) {
-        return true;
-    } else {
-        return false;
-    }
+    return true
 }
 
-const cpf = "074.688.359-55"; 
-if (verificarCPF(cpf)) {
-    console.log("CPF válido.");
-} else {
-    console.log("CPF inválido.");
+function verificarCPF (cpf){
+    let cpfsodigitos = cpf.replaceAll('.',''). replaceAll('-','').split('')
+    if (cpfsodigitos.length != 11){
+        return 'CPF Inválido'
+    }
+    let resposta = calculoloop(10, cpfsodigitos)
+    if(!resposta){
+        return 'CPF inválido'
+    }
+    let resposta2 = calculoloop(11, cpfsodigitos)
+    if(!resposta2){
+        return 'CPF inválido'
+    }
+
+    return 'CPF Válido'
+
 }
+let cpf = '074.688.359-50'
+let cpf2 = '088.557.889-90'
+console.log (verificarCPF(cpf))
+console.log (verificarCPF(cpf2))
